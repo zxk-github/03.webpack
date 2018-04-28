@@ -1,0 +1,85 @@
+2.5 核心概念
+entry 打包入口
+output 输出
+loader 可以让webpack可以处理js之外的类型文件
+plugins 压缩 混淆 代码分割 tree shaking 都是插件系统做到的
+
+entry 一段代码的代码入口，可以让webpack知道依赖的模块，也是打包的入口，告诉webpack， 首先需要从哪个文件找依赖， 然后这些文件的依赖又依赖哪些文件
+entry 可以是一个， 也可以有多个， 打包的入口并不代表代码执行的入口
+多页面应用可以有多个打包入口，一个页面可以加载一个入口， 单页面应用也可以有多个入口。比如说业务代码是打包成一个文件，项目依赖的第三方代码打包为一个文件
+
+module.exports = {
+  entry: 'index.js'
+}
+
+entry: ['index.js', 'vendor.js'] //通过这两个文件创建多个打包入口
+仅仅知道了打包的入口，但是不知道在打包中上面的入口叫什么，没有东西识别
+entry: {
+  index: ['index.js','app.js'],
+  vendor: 'vendor.js'
+}
+key是一个独特的chunk, chunk就是一个代码块
+知道每一个entry对应的chunk的什么，再加一个入口，只需要不断的添加key就好了
+
+output 表示输出
+打包生成文件的一个描述， 一个或者多个，一个输出文件的时候，我们可以直接指定输出文件的名称
+自定义规则， 还可以配合CDN使用
+module.export = {
+  output: {
+    filename: 'index.min.js'
+  }
+}
+
+entry: {
+  index: 'index.js',
+  vendor: 'vendor.js'
+},
+output:{
+  filename: '[name].min.[hash:5].js'
+}
+name entry 入口的名称
+hash hash码
+
+loaders 处理文件
+将文件转换为模块， js可以处理的module
+通过css-loader,可以将css在js中引入进来
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.css/,
+        use: 'css-loader'
+      }
+    ]
+  }
+}
+编译相关
+babel-loader ts-loader
+样式相关
+style-loader css-loader less-loader postcss-loader
+文件相关
+file-loader url-loader
+
+plugins
+参与到打包的整个过程
+打包结果的优化和压缩
+配置编译时的变量
+极其灵活
+
+优化相关 
+CommonsChunkPlugin
+UglifyjsWebpackPlugin
+功能相关
+ExtractTextWebpackPlugin
+HtmlWebpackPlugin
+HotModuleReplacementPlugin
+CopyWebpackPlugin
+
+chunk webpack中就是一个代码块
+bundle 打包一起之后的代码集
+Module 模块，处理之后东西称为一个模块
+
+
+
+
+
