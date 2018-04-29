@@ -1,0 +1,29 @@
+typescript
+js超级
+typescript-loader
+npm install typescript ts-loader --save-dev
+npm install typescript awesome-typescript-loader --save-dev
+配置
+tsconfig.json
+webpack.config.js
+
+常用配置项
+include
+exclude
+compilerOptions
+
+当使用第三方js库的时候，需要安装库的对应的声明文件
+
+方式1
+npm install @types/lodash --save
+
+方式2
+npm install typings -g
+typings install lodash --save
+然后在tsconfig.json中加上
+"compilerOptions": {
+  "typeRoots": {
+    "./node_modules/@type",
+    "./typings/modules"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es3",
+    "allowJs": true
+  },
+
+  "include": [
+    "./src/*"
+  ],
+
+  "exclude": [
+    "./node_modules/*"
+  ]
+}
