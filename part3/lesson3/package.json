@@ -15,5 +15,17 @@
   "bugs": {
     "url": "https://github.com/zxk-github/03.webpack/issues"
   },
-  "homepage": "https://github.com/zxk-github/03.webpack#readme"
+  "homepage": "https://github.com/zxk-github/03.webpack#readme",
+  "devDependencies": {
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1"
+  },
+  "dependencies": {
+    "babel": "^6.23.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-runtime": "^6.26.0"
+  }
 }
