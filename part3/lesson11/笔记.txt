@@ -1,0 +1,21 @@
+提取css
+
+extract-loader
+ExtractTextWebpackPlugin
+
+npm install extract-text-webpack-plugin webpack --save-dev
+
+参数
+1. 设置提取之后文件的名称 filename: [name].min.css
+2. 改变loader
+  ExtractTextWebpackPlugin({
+    fallback:{} //添加loader，使用什么把样式添加到页面中
+    use: [] // 处理css文件所用到的loader
+  })
+
+allChunks 指定css提取的范围
+  默认false，只会提取初始化的css， 异步加载的不会提取出来
+  设置为true把所有的import进来的css都会提取到一个css中，
+
+** 通过Extract-text-webpack-plugin 生成的文件不会自动添加到html中
+
