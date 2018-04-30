@@ -1,0 +1,55 @@
+代码分割和懒加载
+
+在webpack中代码分割和懒加载是他的一个功能，但是不是通过对webpack配置来实现的，而是在写代码的时候进行的，当我们依赖一个模块的时候我们需要告诉webpack，这个模块我们是想通过懒加载还是代码分割
+方式1 内置方法 require.ensure
+  require.ensure()
+  参数
+    []: dependencies 依赖在加载的时候不会执行
+    callback 在callback中，还需要require一下上面的代码，这个时候，代码才会执行
+    errorCallback
+    chunkName
+** require.ensure对promise是有强依赖的，如果浏览器不支持promise，这时候还需要加垫片处理
+  require.include 只接受一个参数，可以把模块引入进来，但是不执行，官方用途：当两个子模块都依赖一个第三方模块，这个时候通过require.ensure在父模块中把第三方模块动态加载进来，这时候，子模块就不需要加载这个第三方模块，可以直接使用
+
+方式2 es规范 定义的动态import
+  System.import() --> import()
+  import() 返回的是一个promise, 在import中传入需要动态加载的模块名以后，就可以像使用promise一个，动态使用模块的加载
+  import().then()
+
+  import(
+    /*webpackChunkName: async-chunk-name*/
+    /*webpackMode: lazy*/
+    moduleName
+  )
+  通过注释的方式，既可以让你符合ES6的语法，又可以传入动态加载的 chunkName, 并且还可以给定一些加载的方式, 动态import会执行我们的代码
+
+使用代码分割场景
+分离业务代码 和 第三方依赖
+分离业务代码 和 业务公共代码 和 第三方依赖
+分离首次加载 和 访问后加载的代码
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
