@@ -1,0 +1,43 @@
+提取公共代码
+CommonsChunkPlugin
+{
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin(option)
+  ]
+}
+
+option配置
+name/names chunk的名称
+1. 当name指定为一个已知chunk的name, 那么表示提取共用代码选定为这个chunk，
+当names给出一连串的name, 表示根据数组的每一项，新建这个插件实例多少次
+2. filename表示共用代码打包以后的文件名
+3. minChunks 可以是数字，Infinity, 函数，
+数字 提取共用代码出现的次数最少是多少
+Infinity 不会把任何的模块打包进去
+函数 通过这个函数可以自定义提取代码逻辑
+4. chunks 指定提取代码的范围， 我需要在哪几个代码块中提取公共代码
+5. children
+6. deepChildren  在entry模块中， 或者更深模块中查找共同依赖
+7. async 创建一个异步的公共代码块
+
+使用场景
+1. 单页面应用
+2. 单页面应用 + 第三方依赖
+3. 多页面应用 + 第三方依赖 + webpack生成代码
+
+*****************************
+
+filename 预定义在entry中有的模块
+chunkFilename 预定义生成新的chunk的名字
+
+*****************************
+
+lesson6
+webpack中，公共代码的提取是针对多entry的，单entry是不会起作用的，是没有办法把单个entry中的共同依赖提取出来，单页面应用中会存在一些懒加载，这个时候，就会有更多提取的选择
+
+
+
+
+
+
+
