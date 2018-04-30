@@ -1,0 +1,13 @@
+css 处理
+
+style-loader 在需要css的页面中创建一个style标签，标签的内容就是加载进来的css
+css-loader 让我们可以向import一个js文件一样，import一个css文件
+
+style-loader/url 在页面中创建一个link标签， 配合file-loader使用, 这时候每一个import css都会产生一个link, 就会有一个网络请求
+style-loader/useable 可以控制我们的css生不生校
+
+style-loader 配置
+  insertAt 插入位置
+  insertInto 插入到dom标签下
+  singleton 是否只使用一个style标签
+  transform (转化，浏览器环境下，插入页面前)， 引入转化的函数， 这个函数在打包阶段不会执行， 而是在把样式塞到html中的这个过程执行，在浏览器端执行，通过这个函数可以得到浏览器型号，页面DOM等等，输入的是css, 输出的是处理之后的css, import几个css， 就会执行几次，对每个css文件都会执行一次

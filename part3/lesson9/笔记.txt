@@ -1,0 +1,23 @@
+css-loader
+
+参数
+  alias (解析的别名)当匹配到的路径下的css里面，需要import某一个文件的时候，这时候可以通过css-loader去配置一个别名，把路径映射到其他地方
+  importLoader (@import) 取决于css后面是不是还有其他的处理loader,如果有这个参数才会有用
+  minimize 是否压缩 true/false
+  modules 是否启用css模块化
+
+css 模块化语法
+  :local 定义一个局部样式
+  :global 定义一个全局样式
+  compose 继承一段样式
+  compose ... from path 从某一个文件中，引入一段样式
+
+modules: true之后
+对class进行了编码，对标签没有进行编码
+可以通过localIdentName: '[path][name]_[local]--[hash:base64:5]'自定义class名称
+path 当前import进来的css路径
+name 引进来的css文件名称
+local 本地的class名称
+hash 编码
+
+
