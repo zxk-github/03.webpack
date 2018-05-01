@@ -1,0 +1,35 @@
+postcss 处理css的工具
+
+插件
+autoprefixer 帮助我们把浏览实现不一的语法，加上各个浏览器的前缀
+cssnano 压缩css，在css-loader中也是使用这个插件将css进行压缩
+postcss-cssnext 让我们可以使用以后css的属性
+比如 css Variable    css变量
+    custom selectors 自定义属性
+    calc()  动态计算
+
+使用postcss 需要放置在css-loader之后，less/sass这种预处理语言之前
+
+options: {
+  ident: 'postcss' //通过ident,表明，后面的插件是给postcss使用的
+  plugins: [
+    require('autoprefixer')(), //通过require进行引入，然后执行
+    require('postcss-cssnext')()
+  ]
+}
+
+设置浏览器兼容性范围
+方式1 package.json中设置
+"browserslist": [
+    ">= 1%",
+    "last 2 versions"
+  ]
+
+方式2 创建一个.browserslistrc 文件
+
+postcss-import
+postcss-url
+postcss-assets
+
+
+

@@ -1,0 +1,17 @@
+tree shaking
+删除没有使用的代码
+
+使用场景
+常规优化
+使用第三方库的某一个功能
+
+css tree shaking
+purifycss-webpack
+
+参数
+  paths: glob.sync([]) //针对这些路径做css tree shaking
+
+安装glob; 方便同时处理多个路径
+
+npm install purify-css purifycss-webpack glob-all --save-dev
+

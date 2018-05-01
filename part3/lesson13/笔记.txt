@@ -1,0 +1,30 @@
+tree shaking
+删除没有使用的代码
+
+js tree shaking
+css tree shaking
+
+使用场景
+1. 常规优化
+2. 使用第三方库的某一个功能
+
+js tree shaking
+webpack.optimize.UglifyJsPlugin()
+
+webpack在默认情况下,会通过注释的形式，把没有使用到的代码标记出来
+
+有些库是没有办法做到tree shaking的，这时候，我们可以借助一些第三方工具
+比如说lodash
+npm install babel-plugin-lodash --save-dev
+
+{
+  loader: 'babel-loader',
+  options: {
+    preset: ['env'],
+    plugins: ['lodash']
+  }
+}
+
+
+
+
