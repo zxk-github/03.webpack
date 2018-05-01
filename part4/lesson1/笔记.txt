@@ -1,0 +1,17 @@
+文件处理
+  图片文件
+  字体文件
+  第三方js库(直接应用地方库的cdn，webpack拿到第三方库的对象)
+
+
+图片处理
+  css中引入图片 file-loader
+  自动合成雪碧图 postcss-sprites
+  压缩图片 img-loader
+  base64编码 url-loader
+
+file-loader 参数， 通过参数来配置路径
+options: {
+  outputPath: './img/'  //相对于output.path的路径
+  useRelativePath: true
+}

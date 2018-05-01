@@ -1,0 +1,25 @@
+webpack 使用方式
+webpack命令的形式
+webpack配置
+第三方脚手架
+
+webpack命令的方式
+webpack <entry>/[<entry>] <output>
+
+webpack-cli
+npm install webpack-cli -g
+交互式的初始化一个项目
+迁移项目v1-->v2
+仅仅能升级webpack配置文件，但是不能升级package.json
+
+webpack
+webpack --config webpack.dev.config.js
+vue-cli
+angular-cli
+react-start
+
+webpack 打包支持 commonJs Es6 module AMD
+AMD是异步加载，所以它所依赖的模块会单独进行打包
+
+
+

@@ -1,0 +1,57 @@
+文件处理
+  图片文件
+  字体文件
+  第三方js库(直接应用地方库的cdn，webpack拿到第三方库的对象)
+
+
+图片处理
+  css中引入图片 file-loader
+  自动合成雪碧图 postcss-sprites
+  压缩图片 img-loader
+  base64编码 url-loader
+
+img-loader
+options: {
+  pngquant: {
+    quality: 80
+  }
+}
+使用顺序
+file-loader
+url-loader
+img-loader
+
+postcss-sprites使用方法
+在postcss-loader中配置
+{
+  loader: 'postcss-loader',
+  options: {
+    ident: 'postcss',
+    plugins: [
+      require('postcss-sprites')({
+        spritePath: 'dist/assets/imgs/sprites' //指定雪碧图输出路径
+        retina: true //处理retina屏
+      }),
+      require('postcss-cssnext')()
+    ]
+  }
+}
+打包之后的雪碧图名称可以在url-loader中或者file-loader中进行配置
+图片以1@2x.png @2x结尾 postcss-sprites会进行自定2倍处理
+
+
+处理字体文件也是使用file-loader url-loader进行处理
+{
+  test: /\.(eot|woff2?|ttf|svg)/,
+  use: [
+    {
+      loader: 'url-loader',
+      optons: {
+        参数和图片一样
+      }
+    }
+  ]
+}
+
+
+
