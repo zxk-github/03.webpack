@@ -1,0 +1,18 @@
+第三方js库
+项目目录下管理js库
+
+方式1 插件webpack.ProvidePlugin    库来源于node_modules
+给我们所有的模块注入我们想要的变量，参数是一个json, key我们想要的直接使用的变量名， value 通用模块的名称
+new webpack.ProvidePlugin({
+  $: 'jquery'
+})
+
+
+方式2 imports-loader 给某一个模块注入一个变量，可以通过test匹配到对应的模块， 然后通过loader的参数
+
+方式3 window.xxx
+
+
+
+
+
