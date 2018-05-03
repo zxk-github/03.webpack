@@ -1,0 +1,27 @@
+搭建本地开发环境
+
+webpack watch mode 只会监听文件的变化，依然需要自己搭建一个web服务器
+webpack-dev-server 搭建webpack开发服务器，文件变化，浏览器自动刷新，设定一些本地header, 远程接口请求
+express/koa + webpack-dev-middleware
+
+webpack -watch / webpack -w
+
+npm install clean-webpack-plugin --save-dev
+在每次打包之前清除上次打包的文件
+new cleanWebpackPlugin(['dist'])
+参数是一个数组，数组中是我们需要清除的目录
+
+ output: {
+  filename: 'js/[name].bundle.js',
+  path: path.resolve(__dirname, 'dist1'),
+  chunkFilename: 'js/[name].chunk.js',
+  // publicPath: 'dist/'
+},
+
+可以通过定义名称，定义输出的js所在的位置
+
+webpack -w --progress --display-reasons --color
+这时候如果修改一个文件， webpack会自动重新打包
+
+
+
