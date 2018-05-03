@@ -1,4 +1,45 @@
 html in webpack
 webpack中处理html文件
+npm install html-webpack-plugin --save-dev
+
+自动生成一个html，自动添加所需要的css js
+html中img图片的处理,优化
+
+将webpack的menifest文件，直接插入到html中，每次打包只打包项目的业务代码
+
+htmlWebpackPlugin 根据给定模板生成我们想要的html的结构
+参数
+  template 模板文件
+  filename 输出文件文件名，会在output中配置的输出文件夹中添加生成的html文件
+  chunks 指定哪几个entry是需要加到html中来的， 比如说当前是多页面程序，指定不同页面添加不同的js, 如果不指定，默认会把所有的entry都键入到页面中, 指定入口之后只会把和这个入口相关的文件打包插入到页面中
+  inject true 需不需要把想要的html css以标签链接的形式添加到页面中
+  minify 是否压缩,实际上也是使用html-minify这个插件, 具体配置可以使用html-minify
+    参数
+      collapseWhitespace: true //去除空格
+
+4-6
+html 中引入图片，并且图片经过html处理之后可以压缩
+html-loader
+通过html-loader可以指定html片段中，哪些参数需要交给webpack处理
+参数
+  attrs: ['img:src'] 数组的每一项就是一个规则，左边是html标签，右边是标签对应的属性，中间使用:隔开， 满足规则的需要交给webpack进行处理
+
+页面中使用
+<img src="${require('./img/a.png')}"/>
+这种写法不需要loader也可以进行处理
+
+4-7 优化
+公共代码每次加载，都会浪费请求，直接使用script标签，把公共代码插入到script标签中，使代码称为页面的一部分，而不是一次单独的http请求。
+
+提前载入webpack加载代码
+inline-manifest-webpack-plugin
+html-webpack-inline-chunk-plugin  //选择chunk然后把内容直接插入到页面中
+参数
+  inlineChunks: ['manifest'] //需要提取插入到页面中的chunk的内容
+new htmlInlinePlugin({
+  inlineChunks: ['manifest']
+})
+
+
 
 
