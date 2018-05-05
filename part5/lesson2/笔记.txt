@@ -1,0 +1,165 @@
+webpack-dev-server
+live reloading 重新刷新浏览器
+1.不会生成打包文件，打包文件會生成的內存中，不會生成顯示文件
+2.路径重定向
+网站中链接的一些地址，配的是线上的，本地是html地址，这时候就需要重定向
+3.支持https
+4.可以在浏览器中显示编译错误
+5.进行接口代理(请求线上接口)
+6.模块热更新，不刷新浏览器，更新页面代码
+
+生成一个本地服务器。做到本地调试开发
+
+inline true/false 默认true,在console里面可以看到打包状态， 设置成false，可以在页面最上看到打包状态变化
+contentBase 提供内容的路径，如果是静态的，就需要指定，默认情况下存在内存中，不需要指定
+port 端口，webpack server 监听端口
+https true 使用https
+proxy 通过设置proxy来指定远程接口代理
+hot 支持模块热更新
+historyApiFallback 提供给h5, history Api使用的
+openpage 指定访问的初始页面位置
+lazy 启动时候，打包任何东西，只有在访问特定东西时候才会启动打包，在多页面时候，很有用
+overlay 遮罩，webpack serve 提供的一个错误提示，会在我们打开的页面中给上一个遮罩，在这个遮罩中给出一些错误提示
+
+devServer: {
+  port: 3000
+},
+因为是webpack的一个自带插件，所以不需要进行注入，仅仅需要进行配置就行
+node_modules/.bin/webpack-dev-server --open
+
+"scripts": {
+  "server": "webpack-dev-server --open"
+},
+historyApiFallback 提供给h5, history Api使用的
+前端单页面应用时候会使用路由，路由使用的是hash, 这时候我们请求的还是一个页面，这时候就能达到在请求数据的时候，不会造成浏览器的刷新，这时候如果使用historyApi,就可以在查找历史，这时候就不会造成浏览器的刷新，这时候浏览器访问的是一个路径，这时候就会出现404
+historyApiFallback: true
+historyApiFallback: {
+  rewrite: [
+    {
+      from: '/dist/*',
+      to: 'dist/a.html'
+    }
+  ]    //将一些路径，都倒流到某一个html文件
+}
+
+historyApiFallback: {
+  rewrite: [
+    {
+      from: /^\/([a-zA-Z0-9]+\/?)([a-zA-Z0-9]+)/,
+      to: function(context){
+        return '/'+context.match[1] + context.match[2]+'.html'
+      }
+      //前面的， 后面的
+    }
+  ]
+}
+
+5-3
+proxy  代理远程的接口请求
+内置http-proxy-middleware
+options 参数
+  target 指定代理的地址, 访问一个路径，地址应该指向哪里
+  changeOrigin 改变源到url 在虚拟主机上会很有用 默认false
+  headers 给代理请求增加http请求的头，比如说，需要带着Cookie请求，这时候就可以带着cookie请求
+  logLevel 帮助调试，显示代理情况，和代理信息
+  pathRewrite 帮助重定向一个请求
+
+示例
+  请求https://m.weibo.cn/api/comments/show?id=1111111&page=1
+
+如果直接通过ajax请求会存在跨域问题，这时候可以通过proxy进行代理
+js中
+  $.get('/api/comments/show',{
+    page: 1,
+    id: 11111111
+  }, function(data){
+
+  })
+
+  为防止跨域， 可以使用代理，让node服务器请求接口，node拿到之后，再返回给我们
+
+  devServer: {
+    proxy:{
+     '/api': { //匹配到/api路径的 
+      target: 'https://m.weibo.cn',
+      changeOrigin: true,
+      logLevel: 'debug',
+      pathRewrite:{
+        '^/comments': '/api/comments' //页面中也comments为首的请求，重定向到/api/comments, 页面中就可以不需/api开头,这时候，匹配规则也可以省略为‘/’
+      }
+     },
+     
+    },
+    port: 3000
+  }
+
+5-4 module hot reloading
+补重新刷新浏览器，可以改变页面中的代码
+ 
+作用
+  保持应用的数据状态
+  节省调试时间
+  样式调试更快
+
+使用
+  devServer.hot: true
+  webpack.HotModuleReplacementPlugin
+  webpack.NamedModulesPlugin  //清晰看到模块的相对路径
+
+module.hot 在代码中，通过module.hot,可以对代码进行一些热更新操作
+当代码进行更新的时候，可以使用module.hot.accept
+
+style-loader 已经进行了上面的处理，所以在进行书写代码的时候，不需要进行配置
+vue react angular 也都进行了处理
+原生js，就需要书写一些配置具有模块热更新
+
+如果使用了css提取，这时候不会生效，需要设置位style-loader
+
+5-5 Source Map 调试
+因为浏览器会有一个编译的过程，如果代码出现错误，这时候不容易查找，source map 会把浏览器运行代码，和源代码之间进行了一个映射
+js Source Map
+css Source Map
+
+方式
+1. 通过webpack配置文件中设置devtool,类型 就会生成对应的source map
+2. webpack.SourceMapDevToolPlugin
+3. webpack.EvalSourceMapDevToolPlugin
+
+开发环境
+  eval
+  eval-source-map
+  cheap-eval-source-map  **
+  cheap-module-eval-source-map
+
+生产环境
+  source-map **
+  hidden-source-map
+  nosources-source-map
+
+
+css-loader.options.sourcemap : true
+less-loader.options.sourcemap : true
+sass-loader.options.sourcemap : true
+所有css处理，都加
+less-loader中 singleton 不能为true
+
+5-6 eslint 代码格式检查
+eslint
+eslint-loader
+eslint-plugin-html 检查html script标签中直接写入的代码
+eslint-friendly-formatter 使用一些格式看到错误或者提示
+
+配置eslint
+
+webpack中添加eslint-loader
+创建.eslintrc.*，对eslint进行配置，或者在package.json中的eslintConfig中配置
+ 
+
+
+
+
+
+
+
+
+
