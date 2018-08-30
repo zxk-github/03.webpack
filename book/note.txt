@@ -1,0 +1,228 @@
+"webpack": "^3.10.0",
+"webpack-dev-server": "2.9.7"
+
+
+entry: 配置模块入口
+output: 配置如何输出最终想要的代码
+module: 配置处理模块的规则
+resolve： 配置寻找模块的规则
+plugins 配置扩展插件
+devServer 
+
+entry 配置模块入口，可抽象成输入，webpack执行构建的第一步c
+Entry 的路径及其依赖的模块的路径可能采用相对于 context 的路径来描述， context 会影响到这些相对路径所指向的真实文件。
+
+ Webpack会为每个生成的 Chunk取一个名称， Chunk的名称和 entry的配置有关。
+·如果 entry 是一个 string 或 array，就只会生成一个 Chunk，这时 Chunk 的名 称是 main。
+·如果 entry 是一个 object，就可能会出现多个 Chunk，这时 Chunk 的名称是 object 键值对中键的名称。
+
+配置动态 Entry
+多个页面需要为每个页面入口配置一个entry, 但是页面数量是不固定的，这是entry就不能写死，这是就需要动态配置entry
+// 同步函数 
+entry: () => {
+    return {
+        a : './pages/a', 
+        b :’./pages/b',
+    }
+}
+//异步函数
+entry: () => {
+    return new Promise ((resolve)=>{
+        resolve({
+            a :'./pages/a',
+            b :'./pages/b',
+        }); 
+    }) ;
+}
+
+output 
+
+filename 配置输出文件的名称
+bundle.js
+[name].bundle.js
+
+chunkFilename 配置无入口的生成的chunk的名称
+chunkFilename 只用于指定在运行过程中生成的 Chunk 在输出时的文件名称。会在运行时生成 Chunk 的常见场景包括:使用 CommonChunkPlugin、使 用 import (’path/to/module ’)动态加载
+
+path 配置输出文件存放的本地目录
+
+publicPath 复杂的项目里可能会有一些构建出的资源需要异步加载，加载这些异步资源需要对应 的 URL 地址 。
+
+crossOriginLoading 
+Webpack 输出的部分代码块可能需要异步加载，而异步加载是通过 JSONP
+
+libraryTarget 和 library
+当webpack去构建一个可以被其他模块导入使用的库时，需要使用到libraryTarget 和 library
+libraryTarget 以何种方式导出库
+library 配置导出库的名称
+
+module 配置模块处理的规则
+rules 用来配置模块处理和解析的规则。通常用来配置loader
+配置一个rule时，大概需要以下三种规则完成
+条件匹配:通过 test、 include、 exclude 三个配置项来选中 Loader 要应用规则的文件。
+
+应用规则: 对选中的文件通过 use 配置项来应用 Loader，可以只应用一个Loader或者按照从后往前的顺序应用一组 Loader，同时可以分别向 Loader传入参数。
+
+重置顺序:一组 Loader 的执行顺序默认是从右到左执行的，通过 enforce 选项可以将其中 一个 Loader 的执行顺序放到最前或者最后 。
+rules: [
+    {
+        test: /\.js$/,
+        use: [
+            {
+                loader :’ babel-loader ’, 
+                options :{
+                    cacheDirectory:true,
+                    // enforce :’post ’的含义是将该 Loader 的执行顺序放到最后
+                    //enforce 的值还可以是 pre，代表将 Loader 的执行顺序放到最前面 
+                    enforce :’ post ’
+                }
+            }
+        ],
+        exclude: 'node_modules',
+        include: 'src'
+    }
+]
+test include exclude还可以是数组
+
+noParse配置项可以让webpack忽略对部分没采用模块化的文件的递归处理，从而提高构建性能，如 jQuery、 ChartJS 庞大又没有采用模块化标准， 让 Webpack去解析这些文件既耗时又没有意义。
+
+noParse: /jqueryl, chartjs/ 
+//使用函数，从 Webpack 3.0.0 开始支持 
+noParse : (content)=> {
+    // content 代表一个模块的文件路径
+    // 返回 true 或 false
+    return /jquery|chart/.test(content) ;
+}
+忽略的文件里不应该包含 import、 require、 define 等模块化 语句，不然会导致在构建出的代码中包含无法在浏览器环境下执行的模块化语句
+
+parse
+parser 属性可以更细粒度地配置哪些模块语法被解析、哪些不被解析。同 noParse 配置项的区别在于， parser 可以精确到语法层面，而 noParse 只能控制哪些文件不被解析。
+
+resolve
+
+webpack在启动之后，会从入口文件递归的找到文件的所有依赖的模块，resolve配置webpack如何寻找模块对应的这些文件
+
+alias 通过别名将原倒入路径映射成一个新的倒入路径
+
+resolve: {
+    alias: {
+        components: './src/components'
+    }
+}
+
+import Button from 'components/Button' 等价
+import Button from './src/components/Button'
+
+mainFields 
+
+extensions 
+在导入语句没带文件后缀时，Webpack 会自动带上后缀后去尝试访问文件是否存在。 resolve.extensions 用于配置在尝试过程中用到的后缀列表
+
+modules 配置webpack去哪些目录下寻找第三方模块，默认只会去node_modules
+有时我们的项目里会有一些模块被其他模块大量依赖和导入，由于 其他模块 的位置不定，针对不同的文件都要计算被导入的模块文件的相对路径 ，这个路径 有时会很长，就像import’../../../components/button’，这时可以利用modules 配置项优化 。假如那些被大量导入的模块都在./ src/components 目录下，则将 modules配置成 modules : [’./src/cornponents','node modules']后，可以简单地 通过import 'button' 导入 。
+
+enforceExtension 设置为true之后，所有模块都必须带上后缀名
+
+enforceModuleExtension 只是针对node_modules文件夹下有效
+enforceModuleExtension 通常搭配 enforceExtension 使用 ， 在 enforceExtension:true 时，因为安装的第三方模块中大多数导入语句都没带文件的后缀，所以这时通过配置 enforceModuleExtension:false 来兼容第三方模块。
+
+plugins 扩展webpack功能
+
+devServer
+
+hot: true 开启之后，会热替换功能，不开启浏览器刷新，开启之后浏览器不刷新，devServer默认自动开启浏览器自动刷新功能
+historyApiFallback 用于方便地开发使用了 HTML5 History API的但页面应用，这类单页应用 要求服 务器在针对任何命中的路由时，都返回一个对应的 HTML 文件。 例如在访问 http:// localhost/user 和 http://localhost/home 时都返回 index.html 文件，浏 览器端 的 JavaScript代码会从 URL里解析出当前页面的状态，显示对应的界面 。
+historyApiFallback: true
+这会导致任何请求都会返回 index .html 文件，这只能用于只有一个 HTML 文件的应用 。
+如果我们的应用由多个单页应用组成 ，则 需要 HTML 文件，配置如下 :
+DevServer 根据不同的请求返回不同的
+historyApiFallback: { 
+    //使用正则匹配命中路由 
+    rewrites : [
+        /user 开头的都返回 user.html
+        { from: /<\/user/, to:’/user.html’}, 
+        { from: /A\/game/, to:’/game.html’}, 
+        //其他的都返回 index.html
+        { from: /./, to:’/index.html’},
+    ]
+}
+
+contentBase 配置devServer服务器的根目录，在默认情况下为当前的执行目录，通常是项目根目录
+
+headers: {
+    // http 头
+}
+
+host
+
+port
+
+devServer.compress 配置是否启用 Gzip 压缩 ，为 boolean 类型，默认为 false.
+
+
+line 
+
+target
+
+devtool
+
+watch和watchOptions
+
+externals 用来告诉webpack要构建的代码使用了哪些不需要被打包的模块，也就是说这些模板是外部环境提供的，Webpack在打包时可以忽略它们。
+externals : {
+    //将导入语句里的 jquery 替换成运行环境里的全局变量 jQuery 
+    jquery : 'jQuery'
+}
+
+resolveLoader
+用来告诉 Webpack 如何去寻找 Loader，因为在使用 Loader 时是通过其 包名称去 引用的， Webpack 需要根据配置 的 Loader包名 去找到 Loader 的实际代码，以调用 Loader 去处理源文件。
+resolveLoader:{
+    // 去哪个目录下寻找 Loader 
+    modules: [’ node_modules ’ ] ,
+    // 入口文件的后缀
+    extensions : [ ’ .js’, ’.json’], 
+    // 指明入口文件位置的字段 
+    mainFields: [’ loader’, ’main’]
+}
+
+
+3章
+
+使用ES6 babel
+1.将es6中的语法转换成es5
+2.使用polyfill 或者 transform-runtime转换新的API
+babel也可以使用插件机制灵活的扩展
+babel-plugin-transform-runtime
+{
+    plugins: [
+        'transform-runtime',
+        {
+            'polyfill': false
+        }
+    ],
+    // 告诉babel需要转换的代码，使用了哪些新的语法特性
+    presets: [
+        
+    ]
+}
+
+babel-plugin-transform-runtime
+babel-preset-env
+babel-preset-react
+
+typescript
+根目录创建tsconfig.json配置文件，编译器会默认读取这个配置文件
+
+{
+    compilerOptions”: {
+    ” module ” : ” commonjs”， //编译出的代码采用的模块规范
+    ”target”:”es5”， //编译出的代码采用 ES 的哪个版本 
+    ”sourceMap”: true, //输出 Source Map 以方便调试
+    ” importHelpers ”: true
+    },
+    ” exclude ”: [
+        //不编译这些目录里的文件 
+        ”node modules”
+    ]
+}
+
