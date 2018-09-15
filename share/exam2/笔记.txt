@@ -33,8 +33,6 @@ webpack每一次的构建都会执行一遍上面的流程
 1）初始化参数
 从配置文件和shell语句中读取与合并参数，得出最终的参数，这个过程中还会执行配置文件中插件实例化语句new plugin()
 
-
-
 2) 实例化compiler 
 使用上一步初始化的配置实例化Compiler实例,Compiler负责文件的启动编译，在Compiler实例中包含完成的webpack配置，全局只存在一个Compiler实例
 3）加载插件
