@@ -1,0 +1,65 @@
+编译的准备阶段
+一、命令行和配置文件中的参数的合并
+1. 判断webpack-cli/webpack-command哪一个安装了。使用安装的那一个没有安装会报错，直接加载对应包的bin/cli.js
+2. 使用yargs模块处理命令行中的参数
+3. process.argv保存当前命令行参数的一个数组
+4. 执行convert-argv.js，根据传入的配置进行相关的处理, 得到命令行和配置文件之间的合并。
+5. 进行参数的验证，保证参数的正确，require(webpack)，穿入参数执行webpack(options)；
+二、根据配置实例化插件，在compiler对应的钩子上挂载插件
+webpack.js
+6. 根据传入的options，加上更多的辅助配置项
+7. 初始化webpack的执行环境
+8. 执行new WebpackOptionsApply().process(options, compiler)，在compiler上添加配置项，根据配置项加载对应的插件，实例化插件的过程就是在compiler上钩子挂载插件的过程
+9. entry-option
+    读取配置的entrys，为每个entry实例化一个对应的entryPlugin，为后面该entry递归解析工作做准备
+编译阶段
+一、执行compiler.run()
+    1. 触发compiler.hooks.beforRun钩子，进行入口文件设置
+    2. 执行compiler.hooks.run钩子，通过fs.stat查看入口文件是不是存在
+二、执行compiler.readRecords()，尝试从缓存中读取文件，没有通过fs.readFile获取文件
+三、执行compiler.compile()
+    1. NormalModuleFactory实例化，为模块的编译作准备
+        1. 实例化，为模块的编译作准备
+        normalModuleFactory：普通模块工厂
+        contextModuleFactory：上下文模块工厂
+        compilationDependencies：编译环境的依赖项
+    2. 执行compiler.hooks.beforeCompile，没有啥作用
+    3. compiler.hooks.compile钩子进行normalModuleFactory的处理
+    4、执行compiler.newCompilation() 
+        1. 根据params创建compilation对象，并在对象上挂载参数
+        2. compiler.hooks.thisCompilation/compiler.hooks.compilation进行在compilation钩子上挂载插件
+        compilation包含了当前的模块资源，编译生成资源，变化的文件等
+    5. 触发compiler.hooks.make钩子，这个钩子在entryOption触发的时候，根据entry的配置，进行了注册
+
+四 compiler.hooks.make的触发进入了compilation的编译阶段
+
+一、执行compilation.addEntry(), 进入了编译阶段，传入了当前的执行上下文，配置文件入口。
+二、执行compilation._addModuleChain() 根据对应的entry类型，获取到对应的NormalModuleFactory的实例
+    1. 调用NormalModuleFactory create方法
+    2. 触发NormalModuleFactory.hooks.beforeResolve()忽略文件
+三、执行compilation.addModule() 如果存在就直接返回没，添加到this.modules里面进行缓存
+四、缓存中不存在就执行compilation.buildModule()
+    1.执行normalModule.build()
+    2.执行normalModule.doBuild(),
+        1.使用loader-runner这个库， 创建loader的执行环境
+        3.通过this.parser尝试生成抽象语法树
+    3.执行回调函数(afterBuild)
+    4.执行compilation.processModuleDependencies()
+    5.执行compilation.addModuleDependencies()
+
+五 触发compiler.hooks.make回调函数，
+    1. 执行compilation.finish() 触发compilation.hooks.finishModules()标志着依次编译阶段的完成
+    2. 执行compilation.seal(), 生成chunkId，生成moduleId，生成hash值，生成编译之后的资源
+六 触发compiler.hooks.afterCompile()钩子
+
+七.输出阶段
+1) should-emit
+所有需要输出的文件已经生成，询问插件有那些文件需要输出，有哪些不需要输出
+2) emit 
+确定好要输出哪些文件后，执行文件输出，可以在这里获取和修改输出的内容
+3) after-emit
+文件输出完毕
+4) done 
+成功完成一次完整的编译和输出流程
+5) failed 
+如果在编译和输出的流程中遇到异常，导致webpack退出，就直接跳到本步骤，插件可以在本事件中获取具体的错误原因
